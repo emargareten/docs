@@ -497,33 +497,22 @@ Classes that implement this interface must define a `get` and `set` method. The 
     namespace App\Casts;
 
     use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+    use Illuminate\Database\Eloquent\Model;
 
     class Json implements CastsAttributes
     {
         /**
          * Cast the given value.
-         *
-         * @param  \Illuminate\Database\Eloquent\Model  $model
-         * @param  string  $key
-         * @param  mixed  $value
-         * @param  array  $attributes
-         * @return array
          */
-        public function get($model, $key, $value, $attributes)
+        public function get(Model $model, string $key, mixed $value, array $attributes): array
         {
             return json_decode($value, true);
         }
 
         /**
          * Prepare the given value for storage.
-         *
-         * @param  \Illuminate\Database\Eloquent\Model  $model
-         * @param  string  $key
-         * @param  array  $value
-         * @param  array  $attributes
-         * @return string
          */
-        public function set($model, $key, $value, $attributes)
+        public function set(Model $model, string $key, mixed $value, array $attributes): string
         {
             return json_encode($value);
         }
@@ -563,20 +552,15 @@ As an example, we will define a custom cast class that casts multiple model valu
 
     use App\Models\Address as AddressModel;
     use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+    use Illuminate\Database\Eloquent\Model;
     use InvalidArgumentException;
 
     class Address implements CastsAttributes
     {
         /**
          * Cast the given value.
-         *
-         * @param  \Illuminate\Database\Eloquent\Model  $model
-         * @param  string  $key
-         * @param  mixed  $value
-         * @param  array  $attributes
-         * @return \App\Models\Address
          */
-        public function get($model, $key, $value, $attributes)
+        public function get(Model $model, string $key, mixed $value, array $attributes): AddressModel
         {
             return new AddressModel(
                 $attributes['address_line_one'],
@@ -586,14 +570,8 @@ As an example, we will define a custom cast class that casts multiple model valu
 
         /**
          * Prepare the given value for storage.
-         *
-         * @param  \Illuminate\Database\Eloquent\Model  $model
-         * @param  string  $key
-         * @param  \App\Models\Address  $value
-         * @param  array  $attributes
-         * @return array
          */
-        public function set($model, $key, $value, $attributes)
+        public function set(Model $model, string $key, mixed $value, array $attributes): array
         {
             if (! $value instanceof AddressModel) {
                 throw new InvalidArgumentException('The given value is not an Address instance.');
@@ -650,6 +628,7 @@ Occasionally, you may need to write a custom cast that only transforms values th
     namespace App\Casts;
 
     use Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes;
+    use Illuminate\Database\Eloquent\Model;
 
     class Hash implements CastsInboundAttributes
     {
@@ -673,14 +652,8 @@ Occasionally, you may need to write a custom cast that only transforms values th
 
         /**
          * Prepare the given value for storage.
-         *
-         * @param  \Illuminate\Database\Eloquent\Model  $model
-         * @param  string  $key
-         * @param  array  $value
-         * @param  array  $attributes
-         * @return string
          */
-        public function set($model, $key, $value, $attributes)
+        public function set(Model $model, string $key, mixed $value, array $attributes): string
         {
             return is_null($this->algorithm)
                         ? bcrypt($value)
@@ -755,6 +728,7 @@ By combining "castables" with PHP's [anonymous classes](https://www.php.net/manu
 
     use Illuminate\Contracts\Database\Eloquent\Castable;
     use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+    use Illuminate\Database\Eloquent\Model;
 
     class Address implements Castable
     {
@@ -770,7 +744,7 @@ By combining "castables" with PHP's [anonymous classes](https://www.php.net/manu
         {
             return new class implements CastsAttributes
             {
-                public function get($model, $key, $value, $attributes)
+                public function get(Model $model, string $key, mixed $value, array $attributes): Address
                 {
                     return new Address(
                         $attributes['address_line_one'],
@@ -778,7 +752,7 @@ By combining "castables" with PHP's [anonymous classes](https://www.php.net/manu
                     );
                 }
 
-                public function set($model, $key, $value, $attributes)
+                public function set(Model $model, string $key, mixed $value, array $attributes): array
                 {
                     return [
                         'address_line_one' => $value->lineOne,
