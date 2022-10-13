@@ -188,7 +188,7 @@ First, let's explore configuring the sender of the email. Or, in other words, wh
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->from('example@example.com', 'Example')
                     ->view('emails.orders.shipped');
@@ -215,7 +215,7 @@ Within a mailable class' `build` method, you may use the `view` method to specif
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->view('emails.orders.shipped');
     }
@@ -233,7 +233,7 @@ If you would like to define a plain-text version of your email, you may use the 
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->view('emails.orders.shipped')
                     ->text('emails.orders.shipped_plain');
@@ -283,7 +283,7 @@ Typically, you will want to pass some data to your view that you can utilize whe
          *
          * @return $this
          */
-        public function build()
+        public function build(): static
         {
             return $this->view('emails.orders.shipped');
         }
@@ -336,7 +336,7 @@ If you would like to customize the format of your email's data before it is sent
          *
          * @return $this
          */
-        public function build()
+        public function build(): static
         {
             return $this->view('emails.orders.shipped')
                         ->with([
@@ -362,7 +362,7 @@ To add attachments to an email, use the `attach` method within the mailable clas
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->view('emails.orders.shipped')
                     ->attach('/path/to/file');
@@ -375,7 +375,7 @@ When attaching files to a message, you may also specify the display name and / o
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->view('emails.orders.shipped')
                     ->attach('/path/to/file', [
@@ -394,7 +394,7 @@ If you have stored a file on one of your [filesystem disks](/docs/{{version}}/fi
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
        return $this->view('emails.orders.shipped')
                    ->attachFromStorage('/path/to/file');
@@ -407,7 +407,7 @@ If necessary, you may specify the file's attachment name and additional options 
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
        return $this->view('emails.orders.shipped')
                    ->attachFromStorage('/path/to/file', 'name.pdf', [
@@ -422,7 +422,7 @@ The `attachFromStorageDisk` method may be used if you need to specify a storage 
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
        return $this->view('emails.orders.shipped')
                    ->attachFromStorageDisk('s3', '/path/to/file');
@@ -438,7 +438,7 @@ The `attachData` method may be used to attach a raw string of bytes as an attach
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->view('emails.orders.shipped')
                     ->attachData($this->pdf, 'name.pdf', [
@@ -510,7 +510,7 @@ Once you have defined your attachable object, you may simply pass an instance of
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->view('photos.resized')
                     ->attach($this->photo);
@@ -544,7 +544,7 @@ Some third-party email providers such as Mailgun and Postmark support message "t
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->view('emails.orders.shipped')
                     ->tag('shipment')
@@ -567,7 +567,7 @@ The `withSymfonyMessage` method of the `Mailable` base class allows you to regis
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         $this->view('emails.orders.shipped');
 
@@ -601,7 +601,7 @@ Then, when configuring the mailable within its `build` method, call the `markdow
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->from('example@example.com')
                     ->markdown('emails.orders.shipped', [
