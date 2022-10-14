@@ -1740,10 +1740,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Bootstrap any application services.
- *
- * @return void
  */
-public function boot()
+public function boot(): void
 {
     Model::preventLazyLoading(! $this->app->isProduction());
 }

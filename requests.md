@@ -494,10 +494,8 @@ use App\Http\Middleware\TrimStrings;
 
 /**
  * Bootstrap any application services.
- *
- * @return void
  */
-public function boot()
+public function boot(): void
 {
     TrimStrings::skipWhen(function ($request) {
         return $request->is('admin/*');
