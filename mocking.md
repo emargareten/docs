@@ -33,7 +33,7 @@ When mocking an object that is going to be injected into your application via La
     use Mockery;
     use Mockery\MockInterface;
 
-    public function test_something_can_be_mocked()
+    public function test_something_can_be_mocked(): void
     {
         $this->instance(
             Service::class,
@@ -110,7 +110,7 @@ We can mock the call to the `Cache` facade by using the `shouldReceive` method, 
 
     class UserControllerTest extends TestCase
     {
-        public function testGetIndex()
+        public function test_get_index(): void
         {
             Cache::shouldReceive('get')
                         ->once()
@@ -133,7 +133,7 @@ If you would like to [spy](http://docs.mockery.io/en/latest/reference/spies.html
 
     use Illuminate\Support\Facades\Cache;
 
-    public function test_values_are_be_stored_in_cache()
+    public function test_values_are_be_stored_in_cache(): void
     {
         Cache::spy();
 
@@ -163,7 +163,7 @@ You may use the `Bus` facade's `fake` method to prevent jobs from being dispatch
 
     class ExampleTest extends TestCase
     {
-        public function test_orders_can_be_shipped()
+        public function test_orders_can_be_shipped(): void
         {
             Bus::fake();
 
@@ -256,7 +256,7 @@ When testing code that dispatches events, you may wish to instruct Laravel to no
         /**
          * Test order shipping.
          */
-        public function test_orders_can_be_shipped()
+        public function test_orders_can_be_shipped(): void
         {
             Event::fake();
 
@@ -300,7 +300,7 @@ If you only want to fake event listeners for a specific set of events, you may p
     /**
      * Test order process.
      */
-    public function test_orders_can_be_processed()
+    public function test_orders_can_be_processed(): void
     {
         Event::fake([
             OrderCreated::class,
@@ -341,7 +341,7 @@ If you only want to fake event listeners for a portion of your test, you may use
         /**
          * Test order process.
          */
-        public function test_orders_can_be_processed()
+        public function test_orders_can_be_processed(): void
         {
             $order = Event::fakeFor(function () {
                 $order = Order::factory()->create();
@@ -380,7 +380,7 @@ After calling the `Mail` facade's `fake` method, you may then assert that [maila
 
     class ExampleTest extends TestCase
     {
-        public function test_orders_can_be_shipped()
+        public function test_orders_can_be_shipped(): void
         {
             Mail::fake();
 
@@ -457,7 +457,7 @@ After calling the `Notification` facade's `fake` method, you may then assert tha
 
     class ExampleTest extends TestCase
     {
-        public function test_orders_can_be_shipped()
+        public function test_orders_can_be_shipped(): void
         {
             Notification::fake();
 
@@ -527,7 +527,7 @@ After calling the `Queue` facade's `fake` method, you may then assert that the a
 
     class ExampleTest extends TestCase
     {
-        public function test_orders_can_be_shipped()
+        public function test_orders_can_be_shipped(): void
         {
             Queue::fake();
 
@@ -555,7 +555,7 @@ You may pass a closure to the `assertPushed` or `assertNotPushed` methods in ord
 
 If you only need to fake specific jobs while allowing your other jobs to execute normally, you may pass the class names of the jobs that should be faked to the `fake` method:
 
-    public function test_orders_can_be_shipped()
+    public function test_orders_can_be_shipped(): void
     {
         Queue::fake([
             ShipOrder::class,
@@ -610,7 +610,7 @@ The `Storage` facade's `fake` method allows you to easily generate a fake disk t
 
     class ExampleTest extends TestCase
     {
-        public function test_albums_can_be_uploaded()
+        public function test_albums_can_be_uploaded(): void
         {
             Storage::fake('photos');
 
@@ -644,7 +644,7 @@ When testing, you may occasionally need to modify the time returned by helpers s
 
     use Illuminate\Support\Carbon;
 
-    public function testTimeCanBeManipulated()
+    public function test_time_can_be_manipulated(): void
     {
         // Travel into the future...
         $this->travel(5)->milliseconds();

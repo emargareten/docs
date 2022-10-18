@@ -474,7 +474,7 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    public function test_without_vite_example()
+    public function test_without_vite_example(): void
     {
         $this->withoutVite();
 
