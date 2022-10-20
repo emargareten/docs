@@ -339,7 +339,7 @@ The Eloquent `Collection` class extends Laravel's base `Illuminate\Support\Colle
 ```php
 $flights = Flight::where('destination', 'Paris')->get();
 
-$flights = $flights->reject(function ($flight) {
+$flights = $flights->reject(function (Flight $flight) {
     return $flight->cancelled;
 });
 ```
@@ -363,8 +363,9 @@ The `chunk` method will retrieve a subset of Eloquent models, passing them to a 
 
 ```php
 use App\Models\Flight;
+use Illuminate\Database\Eloquent\Collection;
 
-Flight::chunk(200, function ($flights) {
+Flight::chunk(200, function (Collection $flights) {
     foreach ($flights as $flight) {
         //
     }
@@ -377,7 +378,7 @@ If you are filtering the results of the `chunk` method based on a column that yo
 
 ```php
 Flight::where('departed', true)
-    ->chunkById(200, function ($flights) {
+    ->chunkById(200, function (Collection $flights) {
         $flights->each->update(['departed' => false]);
     }, $column = 'id');
 ```
@@ -430,7 +431,7 @@ The `cursor` returns an `Illuminate\Support\LazyCollection` instance. [Lazy coll
 ```php
 use App\Models\User;
 
-$users = User::cursor()->filter(function ($user) {
+$users = User::cursor()->filter(function (User $user) {
     return $user->id > 500;
 });
 
@@ -511,7 +512,7 @@ If the `ModelNotFoundException` is not caught, a 404 HTTP response is automatica
 
     use App\Models\Flight;
 
-    Route::get('/api/flights/{id}', function ($id) {
+    Route::get('/api/flights/{id}', function (int $id) {
         return Flight::findOrFail($id);
     });
 
@@ -575,11 +576,8 @@ Of course, when using Eloquent, we don't only need to retrieve models from the d
     {
         /**
          * Store a new flight in the database.
-         *
-         * @param  \Illuminate\Http\Request  $request
-         * @return \Illuminate\Http\Response
          */
-        public function store(Request $request)
+        public function store(Request $request): TODO
         {
             // Validate the request...
 
@@ -928,6 +926,7 @@ Sometimes you may want to periodically delete models that are no longer needed. 
 
     namespace App\Models;
 
+    use Illuminate\Database\Eloquent\Builder;
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Database\Eloquent\Prunable;
 
@@ -937,10 +936,8 @@ Sometimes you may want to periodically delete models that are no longer needed. 
 
         /**
          * Get the prunable model query.
-         *
-         * @return \Illuminate\Database\Eloquent\Builder
          */
-        public function prunable()
+        public function prunable(): Builder
         {
             return static::where('created_at', '<=', now()->subMonth());
         }
@@ -950,10 +947,8 @@ When marking models as `Prunable`, you may also define a `pruning` method on the
 
     /**
      * Prepare the model for pruning.
-     *
-     * @return void
      */
-    protected function pruning()
+    protected function pruning(): void
     {
         //
     }
@@ -962,11 +957,8 @@ After configuring your prunable model, you should schedule the `model:prune` Art
 
     /**
      * Define the application's command schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
      */
-    protected function schedule(Schedule $schedule)
+    protected function schedule(Schedule $schedule): void
     {
         $schedule->command('model:prune')->daily();
     }
@@ -1001,6 +993,7 @@ When models are marked with the `Illuminate\Database\Eloquent\MassPrunable` trai
 
     namespace App\Models;
 
+    use Illuminate\Database\Eloquent\Builder;
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Database\Eloquent\MassPrunable;
 
@@ -1010,10 +1003,8 @@ When models are marked with the `Illuminate\Database\Eloquent\MassPrunable` trai
 
         /**
          * Get the prunable model query.
-         *
-         * @return \Illuminate\Database\Eloquent\Builder
          */
-        public function prunable()
+        public function prunable(): Builder
         {
             return static::where('created_at', '<=', now()->subMonth());
         }
@@ -1177,28 +1168,23 @@ Scopes should always return the same query builder instance or `void`:
 
     namespace App\Models;
 
+    use Illuminate\Database\Eloquent\Builder;
     use Illuminate\Database\Eloquent\Model;
 
     class User extends Model
     {
         /**
          * Scope a query to only include popular users.
-         *
-         * @param  \Illuminate\Database\Eloquent\Builder  $query
-         * @return \Illuminate\Database\Eloquent\Builder
          */
-        public function scopePopular($query)
+        public function scopePopular(Builder $query): void
         {
-            return $query->where('votes', '>', 100);
+            $query->where('votes', '>', 100);
         }
 
         /**
          * Scope a query to only include active users.
-         *
-         * @param  \Illuminate\Database\Eloquent\Builder  $query
-         * @return void
          */
-        public function scopeActive($query)
+        public function scopeActive(Builder $query): void
         {
             $query->where('active', 1);
         }
@@ -1238,12 +1224,8 @@ Sometimes you may wish to define a scope that accepts parameters. To get started
     {
         /**
          * Scope a query to only include users of a given type.
-         *
-         * @param  \Illuminate\Database\Eloquent\Builder  $query
-         * @param  mixed  $type
-         * @return \Illuminate\Database\Eloquent\Builder
          */
-        public function scopeOfType($query, $type)
+        public function scopeOfType(Builder $query, string $type): void
         {
             return $query->where('type', $type);
         }
@@ -1330,7 +1312,7 @@ Instead of using custom event classes, you may register closures that execute wh
          */
         protected static function booted(): void
         {
-            static::created(function ($user) {
+            static::created(function (User $user) {
                 //
             });
         }
@@ -1340,7 +1322,7 @@ If needed, you may utilize [queueable anonymous event listeners](/docs/{{version
 
     use function Illuminate\Events\queueable;
 
-    static::created(queueable(function ($user) {
+    static::created(queueable(function (User $user) {
         //
     }));
 
