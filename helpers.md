@@ -492,7 +492,7 @@ The `Arr::first` method returns the first element of an array passing a given tr
 
     $array = [100, 200, 300];
 
-    $first = Arr::first($array, function ($value, $key) {
+    $first = Arr::first($array, function (int $value, int $key) {
         return $value >= 150;
     });
 
@@ -666,7 +666,7 @@ The `Arr::last` method returns the last element of an array passing a given trut
 
     $array = [100, 200, 300, 110];
 
-    $last = Arr::last($array, function ($value, $key) {
+    $last = Arr::last($array, function (int $value, int $key) {
         return $value >= 150;
     });
 
@@ -687,7 +687,7 @@ The `Arr::map` method iterates through the array and passes each value and key t
 
     $array = ['first' => 'james', 'last' => 'kirk'];
 
-    $mapped = Arr::map($array, function ($value, $key) {
+    $mapped = Arr::map($array, function (string $value, string $key) {
         return ucfirst($value);
     });
 
@@ -882,7 +882,7 @@ You may also sort the array by the results of a given closure:
         ['name' => 'Chair'],
     ];
 
-    $sorted = array_values(Arr::sort($array, function ($value) {
+    $sorted = array_values(Arr::sort($array, function (array $value) {
         return $value['name'];
     }));
 
@@ -962,7 +962,7 @@ The `Arr::where` method filters an array using the given closure:
 
     $array = [100, '200', 300, '400', 500];
 
-    $filtered = Arr::where($array, function ($value, $key) {
+    $filtered = Arr::where($array, function (string|int $value, int $key) {
         return is_string($value);
     });
 
@@ -2661,12 +2661,13 @@ The `padRight` method wraps PHP's `str_pad` function, padding the right side of 
 The `pipe` method allows you to transform the string by passing its current value to the given callable:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
     $hash = Str::of('Laravel')->pipe('md5')->prepend('Checksum: ');
 
     // 'Checksum: a5c95b86291ea299fcbe64458ed12702'
 
-    $closure = Str::of('foo')->pipe(function ($str) {
+    $closure = Str::of('foo')->pipe(function (Stringable $str) {
         return 'bar';
     });
 
@@ -2783,8 +2784,9 @@ The `replaceMatches` method replaces all portions of a string matching a pattern
 The `replaceMatches` method also accepts a closure that will be invoked with each portion of the string matching the given pattern, allowing you to perform the replacement logic within the closure and return the replaced value:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
-    $replaced = Str::of('123')->replaceMatches('/\d/', function ($match) {
+    $replaced = Str::of('123')->replaceMatches('/\d/', function (Stringable $match) {
         return '['.$match[0].']';
     });
 
@@ -2963,10 +2965,11 @@ The `swap` method replaces multiple values in the string using PHP's `strtr` fun
 The `tap` method passes the string to the given closure, allowing you to examine and interact with the string while not affecting the string itself. The original string is returned by the `tap` method regardless of what is returned by the closure:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
     $string = Str::of('Laravel')
         ->append(' Framework')
-        ->tap(function ($string) {
+        ->tap(function (Stringable $string) {
             dump('String after append: '.$string);
         })
         ->upper();
@@ -3049,9 +3052,10 @@ The `upper` method converts the given string to uppercase:
 The `when` method invokes the given closure if a given condition is `true`. The closure will receive the fluent string instance:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
     $string = Str::of('Taylor')
-                    ->when(true, function ($string) {
+                    ->when(true, function (Stringable $string) {
                         return $string->append(' Otwell');
                     });
 
@@ -3065,9 +3069,10 @@ If necessary, you may pass another closure as the third parameter to the `when` 
 The `whenContains` method invokes the given closure if the string contains the given value. The closure will receive the fluent string instance:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
     $string = Str::of('tony stark')
-                ->whenContains('tony', function ($string) {
+                ->whenContains('tony', function (Stringable $string) {
                     return $string->title();
                 });
 
@@ -3078,9 +3083,10 @@ If necessary, you may pass another closure as the third parameter to the `when` 
 You may also pass an array of values to determine if the given string contains any of the values in the array:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
     $string = Str::of('tony stark')
-                ->whenContains(['tony', 'hulk'], function ($string) {
+                ->whenContains(['tony', 'hulk'], function (Stringable $string) {
                     return $string->title();
                 });
 
@@ -3092,9 +3098,10 @@ You may also pass an array of values to determine if the given string contains a
 The `whenContainsAll` method invokes the given closure if the string contains all of the given sub-strings. The closure will receive the fluent string instance:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
     $string = Str::of('tony stark')
-                    ->whenContainsAll(['tony', 'stark'], function ($string) {
+                    ->whenContainsAll(['tony', 'stark'], function (Stringable $string) {
                         return $string->title();
                     });
 
@@ -3108,8 +3115,9 @@ If necessary, you may pass another closure as the third parameter to the `when` 
 The `whenEmpty` method invokes the given closure if the string is empty. If the closure returns a value, that value will also be returned by the `whenEmpty` method. If the closure does not return a value, the fluent string instance will be returned:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
-    $string = Str::of('  ')->whenEmpty(function ($string) {
+    $string = Str::of('  ')->whenEmpty(function (Stringable $string) {
         return $string->trim()->prepend('Laravel');
     });
 
@@ -3121,8 +3129,9 @@ The `whenEmpty` method invokes the given closure if the string is empty. If the 
 The `whenNotEmpty` method invokes the given closure if the string is not empty. If the closure returns a value, that value will also be returned by the `whenNotEmpty` method. If the closure does not return a value, the fluent string instance will be returned:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
-    $string = Str::of('Framework')->whenNotEmpty(function ($string) {
+    $string = Str::of('Framework')->whenNotEmpty(function (Stringable $string) {
         return $string->prepend('Laravel ');
     });
 
@@ -3134,8 +3143,9 @@ The `whenNotEmpty` method invokes the given closure if the string is not empty. 
 The `whenStartsWith` method invokes the given closure if the string starts with the given sub-string. The closure will receive the fluent string instance:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
-    $string = Str::of('disney world')->whenStartsWith('disney', function ($string) {
+    $string = Str::of('disney world')->whenStartsWith('disney', function (Stringable $string) {
         return $string->title();
     });
 
@@ -3147,8 +3157,9 @@ The `whenStartsWith` method invokes the given closure if the string starts with 
 The `whenEndsWith` method invokes the given closure if the string ends with the given sub-string. The closure will receive the fluent string instance:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
-    $string = Str::of('disney world')->whenEndsWith('world', function ($string) {
+    $string = Str::of('disney world')->whenEndsWith('world', function (Stringable $string) {
         return $string->title();
     });
 
@@ -3160,8 +3171,9 @@ The `whenEndsWith` method invokes the given closure if the string ends with the 
 The `whenExactly` method invokes the given closure if the string exactly matches the given string. The closure will receive the fluent string instance:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
-    $string = Str::of('laravel')->whenExactly('laravel', function ($string) {
+    $string = Str::of('laravel')->whenExactly('laravel', function (Stringable $string) {
         return $string->title();
     });
 
@@ -3173,8 +3185,9 @@ The `whenExactly` method invokes the given closure if the string exactly matches
 The `whenNotExactly` method invokes the given closure if the string does not exactly match the given string. The closure will receive the fluent string instance:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
-    $string = Str::of('framework')->whenNotExactly('laravel', function ($string) {
+    $string = Str::of('framework')->whenNotExactly('laravel', function (Stringable $string) {
         return $string->title();
     });
 
@@ -3186,8 +3199,9 @@ The `whenNotExactly` method invokes the given closure if the string does not exa
 The `whenIs` method invokes the given closure if the string matches a given pattern. Asterisks may be used as wildcard values. The closure will receive the fluent string instance:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
-    $string = Str::of('foo/bar')->whenIs('foo/*', function ($string) {
+    $string = Str::of('foo/bar')->whenIs('foo/*', function (Stringable $string) {
         return $string->append('/baz');
     });
 
@@ -3199,8 +3213,9 @@ The `whenIs` method invokes the given closure if the string matches a given patt
 The `whenIsAscii` method invokes the given closure if the string is 7 bit ASCII. The closure will receive the fluent string instance:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
-    $string = Str::of('foo/bar')->whenIsAscii('laravel', function ($string) {
+    $string = Str::of('foo/bar')->whenIsAscii('laravel', function (Stringable $string) {
         return $string->title();
     });
 
@@ -3212,10 +3227,12 @@ The `whenIsAscii` method invokes the given closure if the string is 7 bit ASCII.
 The `whenIsUuid` method invokes the given closure if the string is a valid UUID. The closure will receive the fluent string instance:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
-    $string = Str::of('foo/bar')->whenIsUuid('a0a2a2d2-0b87-4a18-83f2-2529882be2de', function ($string) {
-        return $string->substr(0, 8);
-    });
+    $string = Str::of('foo/bar')
+        ->whenIsUuid('a0a2a2d2-0b87-4a18-83f2-2529882be2de', function (Stringable $string) {
+            return $string->substr(0, 8);
+        });
 
     // 'a0a2a2d2'
 
@@ -3225,8 +3242,9 @@ The `whenIsUuid` method invokes the given closure if the string is a valid UUID.
 The `whenTest` method invokes the given closure if the string matches the given regular expression. The closure will receive the fluent string instance:
 
     use Illuminate\Support\Str;
+    use Illuminate\Support\Stringable;
 
-    $string = Str::of('laravel framework')->whenTest('/laravel/', function ($string) {
+    $string = Str::of('laravel framework')->whenTest('/laravel/', function (Stringable $string) {
         return $string->title();
     });
 
@@ -3677,7 +3695,7 @@ The `optional` function accepts any argument and allows you to access properties
 
 The `optional` function also accepts a closure as its second argument. The closure will be invoked if the value provided as the first argument is not null:
 
-    return optional(User::find($id), function ($user) {
+    return optional(User::find($id), function (User $user) {
         return $user->name;
     });
 
@@ -3767,9 +3785,11 @@ The `retry` function attempts to execute the given callback until the given maxi
 
 If you would like to manually calculate the number of milliseconds to sleep between attempts, you may pass a closure as the third argument to the `retry` function:
 
+    use Exception;
+
     return retry(5, function () {
         // ...
-    }, function ($attempt, $exception) {
+    }, function (int $attempt, Exception $exception) {
         return $attempt * 100;
     });
 
@@ -3781,9 +3801,11 @@ For convenience, you may provide an array as the first argument to the `retry` f
 
 To only retry under specific conditions, you may pass a closure as the fourth argument to the `retry` function:
 
+    use Exception;
+
     return retry(5, function () {
         // ...
-    }, 100, function ($exception) {
+    }, 100, function (Exception $exception) {
         return $exception instanceof RetryException;
     });
 
@@ -3809,7 +3831,7 @@ The session store will be returned if no value is passed to the function:
 
 The `tap` function accepts two arguments: an arbitrary `$value` and a closure. The `$value` will be passed to the closure and then be returned by the `tap` function. The return value of the closure is irrelevant:
 
-    $user = tap(User::first(), function ($user) {
+    $user = tap(User::first(), function (User $user) {
         $user->name = 'taylor';
 
         $user->save();
@@ -3824,7 +3846,7 @@ If no closure is passed to the `tap` function, you may call any method on the gi
 
 To add a `tap` method to a class, you may add the `Illuminate\Support\Traits\Tappable` trait to the class. The `tap` method of this trait accepts a Closure as its only argument. The object instance itself will be passed to the Closure and then be returned by the `tap` method:
 
-    return $user->tap(function ($user) {
+    return $user->tap(function (User $user) {
         //
     });
 
@@ -3873,7 +3895,7 @@ The `trait_uses_recursive` function returns all traits used by a trait:
 
 The `transform` function executes a closure on a given value if the value is not [blank](#method-blank) and then returns the return value of the closure:
 
-    $callback = function ($value) {
+    $callback = function (int $value) {
         return $value * 2;
     };
 
@@ -3921,7 +3943,7 @@ The `view` function retrieves a [view](/docs/{{version}}/views) instance:
 
 The `with` function returns the value it is given. If a closure is passed as the second argument to the function, the closure will be executed and its returned value will be returned:
 
-    $callback = function ($value) {
+    $callback = function (mixed $value) {
         return is_numeric($value) ? $value * 2 : 0;
     };
 
